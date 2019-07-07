@@ -1,0 +1,14 @@
+[mysql]
+# 设置mysql客户端默认字符集
+default-character-set=utf8mb4
+[mysqld]
+# 允许最大连接数
+max_connections=200
+# 服务端使用的字符集默认为8比特编码的latin1字符集
+character-set-server=utf8mb4
+# 设置server_id,注意要唯一
+server-id=102
+# 开启二进制日志功能，以备Slave作为其它Slave的Master时使用
+log-bin=mysql-slave-bin
+# relay_log配置中继日志
+relay_log=edu-mysql-relay-bin

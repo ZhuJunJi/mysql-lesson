@@ -1,0 +1,17 @@
+[mysql]
+# 设置mysql客户端默认字符集
+default-character-set=utf8mb4
+[mysqld]
+# 允许最大连接数
+max_connections=200
+# 服务端使用的字符集默认为8比特编码的latin1字符集
+character-set-server=utf8mb4
+# 同一局域网内注意要唯一
+server-id=100
+# 开启二进制功能，可以随便取
+log-bin=mysql-bin
+[mysqldump]
+# 用户名
+user=***
+# 密码
+password=***

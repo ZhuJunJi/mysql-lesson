@@ -1,0 +1,58 @@
+version: '3.0'
+services:
+  master:
+    image: docker.io/mysql:5.7.26
+    container_name: mysql_master
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    ports:
+      - 3306:3306
+    volumes:
+      - master-conf:/etc/mysql/conf.d
+      - master:/var/lib/mysql
+    networks:
+      - mysqlnet
+
+  slave1:
+    image: docker.io/mysql:5.7.26
+    container_name: mysql_slave1
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    ports:
+      - 3307:3306
+    volumes:
+      - slave1-conf:/etc/mysql/conf.d
+      - slave1:/var/lib/mysql
+    networks:
+      - mysqlnet
+
+  slave2:
+    image: docker.io/mysql:5.7.26
+    container_name: mysql_slave2
+    environment:
+      - MYSQL_ROOT_PASSWORD=123456
+    ports:
+      - 3308:3306
+    volumes:
+      - slave2-conf:/etc/mysql/conf.d
+      - slave2:/var/lib/mysql
+    networks:
+      - mysqlnet
+
+
+volumes:
+  master:
+    driver: local
+  master-conf:
+    driver: local
+  slave1:
+    driver: local
+  slave1-conf:
+    driver: local
+  slave2:
+    driver: local
+  slave2-conf:
+    driver: local
+
+networks:
+  mysqlnet:
