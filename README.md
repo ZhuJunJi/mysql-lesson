@@ -1,7 +1,56 @@
 ### docker-compose 构建 Mysql 主从备份
 
-#### docker-compose.yml
+#### 构建步骤
 
+##### Git 拉取项目
+```shell
+git clone https://github.com/ZhuJunJi/mysql-slave.git
+cd mysql-slave
+```
+
+##### 修改 docker-compose.yml 设置 root 用户密码
+
+##### 修改 master/mysql.cnf 设置数据库同步 user password
+
+##### 启动 docker-compose
+```shell
+docker-compose up -d
+```
+
+##### 执行 mysql_config.sh 将 master slave1 slave2 配置文件复制到相应 docker volume 
+```shell
+sudo chmod +x mysql_config.sh
+./mysql_config.sh
+```
+
+##### master 创建数据同步账号
+
+```mysql
+CREATE USER 'user'@'192.168.137.%' IDENTIFIED BY 'password';
+GRANT REPLICATION SLAVE ON *.* TO 'user'@'192.168.137.%';
+FLUSH PRIVILEGES;
+# 查看master信息
+SHOW MASTER STATUS;
+```
+
+##### slave 配置
+
+```mysql
+STOP SLAVE;
+
+change MASTER TO master_host = '192.168.137.100',
+master_user = 'user',
+master_password = 'password',
+master_port = 3306,
+master_log_file = 'mysql-bin.000001',
+master_log_pos = 971,
+master_connect_retry = 30;
+
+START SLAVE;
+```
+
+
+#### docker-compose.yml
 ```yml
 version: '3.0'
 services:
@@ -120,32 +169,6 @@ server-id=102
 log-bin=mysql-slave-bin
 # relay_log配置中继日志
 relay_log=edu-mysql-relay-bin
-```
-
-#### master 创建数据同步账号
-
-```mysql
-CREATE USER 'user'@'192.168.137.%' IDENTIFIED BY 'password';
-GRANT REPLICATION SLAVE ON *.* TO 'user'@'192.168.137.%';
-FLUSH PRIVILEGES;
-# 查看master信息
-SHOW MASTER STATUS;
-```
-
-#### slave 配置
-
-```mysql
-STOP SLAVE;
-
-change MASTER TO master_host = '192.168.137.100',
-master_user = 'user',
-master_password = 'password',
-master_port = 3306,
-master_log_file = 'mysql-bin.000001',
-master_log_pos = 971,
-master_connect_retry = 30;
-
-START SLAVE;
 ```
 
 ### 定时备份
